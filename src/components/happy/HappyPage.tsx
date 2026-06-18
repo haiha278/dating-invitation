@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Patrick_Hand } from "next/font/google";
 
 const patrickHand = Patrick_Hand({
@@ -6,6 +9,12 @@ const patrickHand = Patrick_Hand({
 });
 
 export default function HappyPage() {
+  const router = useRouter();
+
+  const handleNext = () => {
+    router.push("/date");
+  };
+
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className="flex w-full max-w-sm flex-col items-center text-center">
@@ -32,6 +41,7 @@ export default function HappyPage() {
 
           <button
             type="button"
+            onClick={handleNext}
             className={`${patrickHand.className} mt-8 cursor-pointer rounded-full bg-pink-400 px-10 py-3 text-2xl font-bold text-white shadow-lg transition hover:scale-105 hover:bg-pink-600`}
           >
             Next 💖
