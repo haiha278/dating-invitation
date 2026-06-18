@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { Patrick_Hand } from "next/font/google";
 
@@ -8,6 +8,14 @@ const patrickHand = Patrick_Hand({
   subsets: ["latin"],
   weight: "400",
 });
+
+// SET CỨNG EMAILJS CONFIG Ở ĐÂY
+const EMAILJS_SERVICE_ID = "service_5zfyd4s";
+const EMAILJS_TEMPLATE_ID = "template_fjj8onj";
+const EMAILJS_PUBLIC_KEY = "YW5N9mtoIyCA67LTA";
+
+// Nếu gửi nhiều email thì ngăn cách bằng dấu phẩy
+const EMAIL_TO = "haiha278172@gmail.com";
 
 export default function FinalPage() {
   const [date, setDate] = useState("");
@@ -18,11 +26,22 @@ export default function FinalPage() {
   const [sending, setSending] = useState(false);
   const [emailStatus, setEmailStatus] = useState("");
 
+  // Chống useEffect bị chạy 2 lần trong dev mode
+  const hasSentEmail = useRef(false);
+
   useEffect(() => {
+    if (hasSentEmail.current) return;
+    hasSentEmail.current = true;
+
     const savedDate = localStorage.getItem("date") || "";
     const savedTime = localStorage.getItem("time") || "";
     const savedFood = localStorage.getItem("food") || "";
     const savedActivity = localStorage.getItem("activity") || "";
+
+    console.log("Final date:", savedDate);
+    console.log("Final time:", savedTime);
+    console.log("Final food:", savedFood);
+    console.log("Final activity:", savedActivity);
 
     setDate(savedDate);
     setTime(savedTime);
@@ -31,10 +50,6 @@ export default function FinalPage() {
 
     sendEmail(savedDate, savedTime, savedFood, savedActivity);
   }, []);
-
-  console.log("serviceId:", process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID);
-  console.log("templateId:", process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID);
-  console.log("publicKey:", process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
 
   const sendEmail = async (
     selectedDate: string,
@@ -47,22 +62,37 @@ export default function FinalPage() {
       return;
     }
 
+    if (
+      !EMAILJS_SERVICE_ID ||
+      !EMAILJS_TEMPLATE_ID ||
+      !EMAILJS_PUBLIC_KEY ||
+      !EMAIL_TO
+    ) {
+      setEmailStatus("Missing EmailJS config 😢");
+      return;
+    }
+
     try {
       setSending(true);
       setEmailStatus("Sending email...");
 
+      const templateParams = {
+        to_email: EMAIL_TO,
+        date: selectedDate,
+        time: selectedTime,
+        food: selectedFood,
+        activity: selectedActivity,
+        message: "Time to get ready for the meeting 💌",
+      };
+
+      console.log("Sending params to EmailJS:", templateParams);
+
       await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
         {
-          to_email: process.env.NEXT_PUBLIC_EMAIL_TO,
-          date: selectedDate,
-          time: selectedTime,
-          food: selectedFood,
-          activity: selectedActivity,
-        },
-        {
-          publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
+          publicKey: EMAILJS_PUBLIC_KEY,
         }
       );
 
