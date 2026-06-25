@@ -15,7 +15,7 @@ const EMAILJS_TEMPLATE_ID = "template_fjj8onj";
 const EMAILJS_PUBLIC_KEY = "YW5N9mtoIyCA67LTA";
 
 // Nếu gửi nhiều email thì ngăn cách bằng dấu phẩy
-const EMAIL_TO = "haiha278172@gmail.com";
+const EMAIL_TO = "haiha278172@gmail.com,nguyendieuanh2002vn@gmail.com";
 
 export default function FinalPage() {
   const [date, setDate] = useState("");
