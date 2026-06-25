@@ -43,8 +43,8 @@ export default function QuestionPage() {
   }, []);
 
   const moveNoButton = () => {
-    const randomX = Math.floor(Math.random() * 600) - 130;
-    const randomY = Math.floor(Math.random() * 600) - 90;
+    const randomX = Math.floor(Math.random() * 200) - 130;
+    const randomY = Math.floor(Math.random() * 200) - 90;
 
     setNoPosition({
       x: randomX,
